@@ -3,10 +3,10 @@
 from time import perf_counter
 import numpy as np
 
-from eve_bench import ArchVariety
+from eve_bench import ArchVarietyImageV2
 from eve.visualisation import SofaPygame
 
-intervention = ArchVariety()
+intervention = ArchVarietyImageV2()
 visu = SofaPygame(intervention)
 
 
@@ -21,7 +21,8 @@ for _ in range(3):
         start = perf_counter()
 
         action = np.array([40.0, 0.2])
-        intervention.step(action=action)
+        printout = intervention.step(action=action)
+        print('check: ', printout)
         visu.render()
 
         n_steps += 1
