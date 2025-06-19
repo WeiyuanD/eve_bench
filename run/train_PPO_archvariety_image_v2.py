@@ -7,7 +7,7 @@ import re
 import torch
 # from learn.feature_extractor.cnn import CustomCNNExtractor
 
-from stable_baselines3 import SAC
+from stable_baselines3 import PPO
 from stable_baselines3.common.noise import NormalActionNoise
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.callbacks import BaseCallback, CheckpointCallback, CallbackList
@@ -40,7 +40,7 @@ def make_env():
     wrapped_image = eve.observation.imagewrapper.ShowVessels(intervention, wrapped_image)
     image_based = eve.observation.ObsDict({
         "image": wrapped_image, 
-        # "target": target_state, 
+        # "target": target_state,
         # "last_action": last_action
     })
 
@@ -193,7 +193,7 @@ def find_latest_checkpoint(directory, prefix):
     return latest_model_path
 
 if __name__ == "__main__":
-    num_envs = 4
+    num_envs = 16
     print('-------------------------------------------------num of envs: ', num_envs, '------------------------------------------------')
     train_env = SubprocVecEnv([make_env for _ in range(num_envs)])
     eval_env = make_eval_env()
@@ -202,24 +202,25 @@ if __name__ == "__main__":
     #noise_std = 0.1
     #action_noise = NormalActionNoise(mean=np.zeros((1, 2)), sigma=noise_std * np.ones((1, 2)))
 
-    model_path = "image_based/SAC/models"
+    # model_path = "image_based/PPO/models"
+    model_path = "nfs/home/agranados/projects/RL-Image/results/ppo/models"
 
-    model_prefix = "sac_model_image_checkpoint"
+    model_prefix = "ppo_model_image_checkpoint"
     latest_model = find_latest_checkpoint(model_path, model_prefix)
 
     if latest_model:
-        model = SAC.load(latest_model, env=train_env)
+        model = PPO.load(latest_model, env=train_env)
         current_timestep = int(re.search(r"(\d+)\.zip", latest_model).group(1))
         print(f"Resuming training from checkpoint: {latest_model} at timestep {current_timestep}")
     else:
-        # model = SAC("MultiInputPolicy", train_env, policy_kwargs={'features_extractor_class': CustomCNNExtractor}, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
-        model = SAC("MultiInputPolicy", train_env, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
+        # model = PPO("MultiInputPolicy", train_env, policy_kwargs={'features_extractor_class': CustomCNNExtractor}, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
+        model = PPO("MultiInputPolicy", train_env, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
 
         current_timestep = 0
         print("Starting training from scratch")
 
-    # eval_callback = CustomEvalCallback(eval_env, eval_freq=250000, log_path="/nfs/home/agranados/projects/RL/Scripts/batch_nine/sac_model_9_eval_results.csv", verbose=1)
-    eval_callback = CustomEvalCallback(eval_env, eval_freq=250000, log_path="image_based/SAC/logs/sac_model_image_eval_results.csv", verbose=1)
+    eval_callback = CustomEvalCallback(eval_env, eval_freq=25000, log_path="/nfs/home/agranados/projects/RL/Scripts/batch_nine/ppo_eval_results.csv", verbose=1)
+    # eval_callback = CustomEvalCallback(eval_env, eval_freq=250000, log_path="image_based/PPO/logs/ppo_model_image_eval_results.csv", verbose=1)
 
     total_timesteps = 1e7
     save_interval = 250000
@@ -229,11 +230,11 @@ if __name__ == "__main__":
         model.learn(total_timesteps=steps_to_run, reset_num_timesteps=False, callback=eval_callback, progress_bar=True)
 
         current_timestep += steps_to_run
-        interim_save_path = f"{model_path}/sac_model_image_checkpoint_{current_timestep}.zip"
+        interim_save_path = f"{model_path}/ppo_model_image_checkpoint_{current_timestep}.zip"
         model.save(interim_save_path)
         print(f"Checkpoint saved at {interim_save_path}")
 
-    final_model_path = f"{model_path}/sac_model_image_final.zip"
+    final_model_path = f"{model_path}/ppo_model_image_final.zip"
     model.save(final_model_path)
     print(f"Final model saved at: {final_model_path}")
 

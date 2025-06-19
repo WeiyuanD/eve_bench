@@ -40,7 +40,7 @@ def make_env():
     wrapped_image = eve.observation.imagewrapper.ShowVessels(intervention, wrapped_image)
     image_based = eve.observation.ObsDict({
         "image": wrapped_image, 
-        "target": target_state, 
+        # "target": target_state,
         # "last_action": last_action
     })
 
@@ -98,7 +98,7 @@ def make_eval_env():
     wrapped_image = eve.observation.imagewrapper.ShowVessels(intervention, wrapped_image)
     image_based = eve.observation.ObsDict({
         "image": wrapped_image, 
-        "target": target_state, 
+        # "target": target_state, 
         # "last_action": last_action
     })
 
@@ -193,7 +193,7 @@ def find_latest_checkpoint(directory, prefix):
     return latest_model_path
 
 if __name__ == "__main__":
-    num_envs = 4
+    num_envs = 16
     print('-------------------------------------------------num of envs: ', num_envs, '------------------------------------------------')
     train_env = SubprocVecEnv([make_env for _ in range(num_envs)])
     eval_env = make_eval_env()
@@ -202,7 +202,8 @@ if __name__ == "__main__":
     #noise_std = 0.1
     #action_noise = NormalActionNoise(mean=np.zeros((1, 2)), sigma=noise_std * np.ones((1, 2)))
 
-    model_path = "image_based/A2C/models"
+    # model_path = "image_based/A2C/models"
+    model_path = "nfs/home/agranados/projects/RL-Image/results/a2c/models"
 
     model_prefix = "a2c_model_image_checkpoint"
     latest_model = find_latest_checkpoint(model_path, model_prefix)
@@ -218,8 +219,8 @@ if __name__ == "__main__":
         current_timestep = 0
         print("Starting training from scratch")
 
-    # eval_callback = CustomEvalCallback(eval_env, eval_freq=250000, log_path="/nfs/home/agranados/projects/RL/Scripts/batch_nine/a2c_model_9_eval_results.csv", verbose=1)
-    eval_callback = CustomEvalCallback(eval_env, eval_freq=250000, log_path="image_based/A2C/logs/a2c_model_image_eval_results.csv", verbose=1)
+    eval_callback = CustomEvalCallback(eval_env, eval_freq=25000, log_path="/nfs/home/agranados/projects/RL-Image/results/a2c/logs/a2c_eval_results.csv", verbose=1)
+    # eval_callback = CustomEvalCallback(eval_env, eval_freq=250000, log_path="image_based/A2C/logs/a2c_model_image_eval_results.csv", verbose=1)
 
     total_timesteps = 1e7
     save_interval = 250000
