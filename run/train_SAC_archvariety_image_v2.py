@@ -203,7 +203,7 @@ if __name__ == "__main__":
     #action_noise = NormalActionNoise(mean=np.zeros((1, 2)), sigma=noise_std * np.ones((1, 2)))
 
     # model_path = "image_based/SAC/models"
-    model_path = "nfs/home/agranados/projects/RL-Image/results/sac/models"
+    model_path = "/nfs/home/agranados/projects/RL-Image/results/sac/models"
 
     model_prefix = "sac_model_image_checkpoint"
     latest_model = find_latest_checkpoint(model_path, model_prefix)
