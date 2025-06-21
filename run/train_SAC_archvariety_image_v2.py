@@ -214,7 +214,7 @@ if __name__ == "__main__":
         print(f"Resuming training from checkpoint: {latest_model} at timestep {current_timestep}")
     else:
         # model = SAC("MultiInputPolicy", train_env, policy_kwargs={'features_extractor_class': CustomCNNExtractor}, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
-        model = SAC("MultiInputPolicy", train_env, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
+        model = SAC("MultiInputPolicy", train_env, verbose=1, seed=42, device="cuda" if torch.cuda.is_available() else "cpu")
 
         current_timestep = 0
         print("Starting training from scratch")
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     # eval_callback = CustomEvalCallback(eval_env, eval_freq=250000, log_path="/nfs/home/agranados/projects/RL/Scripts/batch_nine/sac_model_9_eval_results.csv", verbose=1)
     # eval_callback = CustomEvalCallback(eval_env, eval_freq=250000, log_path="image_based/SAC/logs/sac_model_image_eval_results.csv", verbose=1)
 
-    total_timesteps = 1e7
+    total_timesteps = 2e7
     save_interval = 250000
 
     while current_timestep < total_timesteps:

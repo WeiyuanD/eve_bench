@@ -197,6 +197,8 @@ if __name__ == "__main__":
     print('-------------------------------------------------num of envs: ', num_envs, '------------------------------------------------')
     train_env = SubprocVecEnv([make_env for _ in range(num_envs)])
     eval_env = make_eval_env()
+    # by increasing the number of envs, you indeed increase the total batch size (n_envs * n_steps), can try to scale it then (n_steps = original_n_steps / n_envs
+    num_steps = int(2048 / num_envs)
 
     #n_actions = train_env.action_space.shape[-1]
     #noise_std = 0.1
@@ -214,7 +216,7 @@ if __name__ == "__main__":
         print(f"Resuming training from checkpoint: {latest_model} at timestep {current_timestep}")
     else:
         # model = PPO("MultiInputPolicy", train_env, policy_kwargs={'features_extractor_class': CustomCNNExtractor}, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
-        model = PPO("MultiInputPolicy", train_env, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
+        model = PPO("MultiInputPolicy", train_env, verbose=1, seed=42, n_steps=num_steps, device="cuda" if torch.cuda.is_available() else "cpu")
 
         current_timestep = 0
         print("Starting training from scratch")

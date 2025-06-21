@@ -214,7 +214,7 @@ if __name__ == "__main__":
         print(f"Resuming training from checkpoint: {latest_model} at timestep {current_timestep}")
     else:
         # model = A2C("MultiInputPolicy", train_env, policy_kwargs={'features_extractor_class': CustomCNNExtractor or NatureCNN}, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
-        model = A2C("MultiInputPolicy", train_env, verbose=1, device="cuda" if torch.cuda.is_available() else "cpu")
+        model = A2C("MultiInputPolicy", train_env, verbose=1, seed=42, device="cuda" if torch.cuda.is_available() else "cpu")
 
         current_timestep = 0
         print("Starting training from scratch")
