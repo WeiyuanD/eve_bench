@@ -202,8 +202,8 @@ if __name__ == "__main__":
     #noise_std = 0.1
     #action_noise = NormalActionNoise(mean=np.zeros((1, 2)), sigma=noise_std * np.ones((1, 2)))
 
-    model_path = "/home/mtgroup/logdir/sb3_test/models"
-    # model_path = "/nfs/home/agranados/projects/RL-Image/results/a2c/models"
+    # model_path = "/home/mtgroup/logdir/sb3_test/models"
+    model_path = "/nfs/home/agranados/projects/RL-Image/results/test/models"
 
     model_prefix = "a2c_model_image_checkpoint"
     latest_model = find_latest_checkpoint(model_path, model_prefix)
@@ -219,8 +219,8 @@ if __name__ == "__main__":
         current_timestep = 0
         print("Starting training from scratch")
 
-    # eval_callback = CustomEvalCallback(eval_env, eval_freq=25000, log_path="/nfs/home/agranados/projects/RL-Image/results/a2c/logs/a2c_eval_results.csv", verbose=1)
-    eval_callback = CustomEvalCallback(eval_env, eval_freq=25000, log_path="/home/mtgroup/logdir/sb3_test/logs/a2c_model_image_eval_results.csv", verbose=1)
+    eval_callback = CustomEvalCallback(eval_env, eval_freq=25000, log_path="/nfs/home/agranados/projects/RL-Image/results/test/logs/test_eval_results.csv", verbose=1)
+    # eval_callback = CustomEvalCallback(eval_env, eval_freq=25000, log_path="/home/mtgroup/logdir/sb3_test/logs/a2c_model_image_eval_results.csv", verbose=1)
 
     total_timesteps = 1e7
     save_interval = 250000
