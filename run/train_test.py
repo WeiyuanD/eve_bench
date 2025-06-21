@@ -193,7 +193,7 @@ def find_latest_checkpoint(directory, prefix):
     return latest_model_path
 
 if __name__ == "__main__":
-    num_envs = 16
+    num_envs = 8
     print('-------------------------------------------------num of envs: ', num_envs, '------------------------------------------------')
     train_env = SubprocVecEnv([make_env for _ in range(num_envs)])
     eval_env = make_eval_env()
